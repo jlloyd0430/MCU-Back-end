@@ -13,7 +13,7 @@ const connectToMongoDB = require("./db/mongodb");
 const cors = require("cors");
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   optionSuccessStatus: 200,
 };
 

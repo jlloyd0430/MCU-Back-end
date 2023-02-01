@@ -56,44 +56,39 @@ async function getCharacterByName(req, res) {
 
 async function updateCharacter(req, res) {
   try {
-    let targetedCharacter = await Mcu.findOne({ _id: req.params.id });
+    let targetCharacter = await Mcu.findOne({ _id: req.params.id });
 
     let updatedCharacter = {
-      _id: targetedCharacter._id,
-      name: targetedCharacter.name,
+      _id: targetCharacter._id,
+      name: targetCharacter.name,
       debut: req.body.debut,
       debutYear: req.body.debutYear,
     };
 
-    await updatedCharacter.save();
+    await Mcu.updateOne(
+      { _id: req.params.id },
+      { $set: updatedCharacter },
+      { upsert: true }
+    );
 
     res.json({
       message: "success",
-      payload: updatedCharacter,
+      payload: updateCharacter,
     });
-  } catch (error) {
-    res.json({
-      message: "failure",
-      payload: `updateCharacter() failed: ${error}`,
-    });
+  } catch (e) {
+    console.log(`Error in updateCharacter(): ` + e);
   }
 }
 
 async function deleteCharacter(req, res) {
   try {
-    let deleteTarget = req.params.id;
+    let targetCharacter = req.params.id;
 
-    let deletedChar = await Mcu.deleteOne({ _id: deleteTarget });
+    let deletedCharacter = await Mcu.deleteOne({ _id: targetCharacter });
 
-    res.json({
-      message: "success",
-      payload: deletedChar,
-    });
-  } catch (error) {
-    res.json({
-      message: "error",
-      payload: `deleteCharacter() error: ${error}`,
-    });
+    res.json({ message: "success", payload: deletedCharacter });
+  } catch (e) {
+    console.log(`Error in deleteCharacter(): ` + e);
   }
 }
 
